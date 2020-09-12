@@ -1,0 +1,327 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" integrity="sha512-s+xg36jbIujB2S2VKfpGmlC3T5V2TF3lY48DX7u2r9XzGzgPsa6wTpOQA7J9iffvdeBN0q9tKzRxVxw1JviZPg==" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/main.css' %}">
+
+    {% if title %}
+        <title>Django Blog - {{ title }}</title>
+    {% else %}
+        <title>Django Blog</title>
+    {% endif %}
+
+    <style>
+        /* .highcharts-title tspan{
+            color: #fff;
+        } */
+        .highcharts-title{
+        display: none;
+      }
+
+        .highcharts-figure, .highcharts-data-table table {
+            min-width: 320px; 
+            max-width: 800px;
+            margin: 1em auto;
+        }
+
+        .highcharts-data-table table {
+            font-family: Verdana, sans-serif;
+            border-collapse: collapse;
+            border: 1px solid #EBEBEB;
+            margin: 10px auto;
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+        }
+        .highcharts-data-table caption {
+            padding: 1em 0;
+            font-size: 1.2em;
+            color: #555;
+        }
+        .highcharts-data-table th {
+            font-weight: 600;
+            padding: 0.5em;
+        }
+        .highcharts-data-table td, .highcharts-data-table th, .highcharts-data-table caption {
+            padding: 0.5em;
+        }
+        .highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even) {
+            background: #f8f8f8;
+        }
+        .highcharts-data-table tr:hover {
+            background: #f1f7ff;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Poiret+One&display=swap" rel="stylesheet">
+
+</head>
+<body>
+    <header class="site-header">
+      <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand mr-4" href="{% url 'blog-home' %}" style="font-family: 'Poiret One', cursive; font-weight: 700 !important;">C O D E - W E E B S</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarToggle">
+            <div class="navbar-nav mr-auto">
+              <a class="nav-item nav-link" href="{% url 'blog-home' %}">Home</a>
+              <a class="nav-item nav-link" href="{% url 'blog-about' %}">About</a>
+            </div>
+            <!-- Navbar Right Side -->
+            <div class="navbar-nav">
+
+
+            <form class="form-inline my-2 my-lg-0" method="POST" action="{% url 'search-stuff' %}">
+              {% csrf_token %}
+              <input class="form-control mr-sm-2" type="search" name="postsearch" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+
+
+            {% if user.is_authenticated %}
+            <a class="nav-item nav-link" href="{% url 'post-create' %}">New Post</a>
+            
+
+            <a class="nav-item nav-link" href="{% url 'profile' %}">Profile</a>
+            
+            <a class="nav-item nav-link" href="{% url 'logout' %}">Log Out</a>
+
+            {% else %}            
+              <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
+              <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
+            </div>
+
+            {% endif %}
+            
+          </div>
+        </div>
+      </nav>
+    </header>
+    <div class="alert alert-success container text-center" style="margin-top: 50px;">
+
+        <h3 class="alert-heading">Here are the Stats you asked for!</h3>
+        
+    </div>
+    
+    <div class="container">
+        <script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/wordcloud.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+    <div class="alert alert-dark" style="margin-top: 40px;">
+
+        <h4 class="alert-heading">WordCloud!</h4>
+        <p>This word cloud shows the most frequently used keywords and trendy word in the site.</p>
+        <hr>
+        <figure class="highcharts-figure">
+            <div id="container"></div>
+        </figure>
+    </div>
+
+    <div class="alert alert-dark" style="margin-top: 30px;">
+
+        <h4 class="alert-heading">Hot Languages!</h4>
+        <p>This Bar graph shows the top 5 queried languages in the site. We have used Deep Learning model to extract the programming language from the context of the query and even the code given in the query.</p>
+        <hr>
+        <canvas id="myChart" width="400" height="150"></canvas>
+        <hr>
+        <p>The Radar Chart</p>
+        <canvas id="radar-chart" width="400" height="150"></canvas>
+    </div>
+
+    <div class="alert alert-dark" style="margin-top: 30px;">
+
+        <h4 class="alert-heading">Hit v/s Not Hit</h4>
+        <p>This pie chart shows how many total questions are there v/s how many are answered.</p>
+        <hr>
+        <canvas id="myChart1" width="400" height="150"></canvas>
+    </div>
+    
+    <script>
+        new Chart(document.getElementById("radar-chart"), {
+    type: 'radar',
+    data: {
+      labels: ["{{ l1|safe }}", "{{ l2|safe }}", "{{ l3|safe }}", "{{ l4|safe }}", "{{ l5|safe }}"],
+      datasets: [
+        {
+            label: "No of Queries",
+            fill: true,
+            backgroundColor:  "rgba(255,99,132,0.2)",
+            borderColor: "rgba(255,99,132,1)",
+            pointBorderColor: "#fff",
+            pointBackgroundColor: "rgba(255,99,132,1)",
+            data: ["{{ v1|safe }}", "{{ v2|safe }}", "{{ v3|safe }}", "{{ v4|safe }}", "{{ v5|safe }}"],
+            },
+        ]
+        },
+        options: {
+        title: {
+            display: true,
+            text: 'Top Queried Languages'
+        },
+        scale: {
+        ticks: {
+            min: 0,
+            //max: 100,
+            //stepSize: 10
+        }
+    }
+        }
+    });
+    </script>
+    
+    <script>
+        var text = "{{ text|safe }}";
+        var lines = text.split(/[,\. ]+/g),
+            data = Highcharts.reduce(lines, function (arr, word) {
+                var obj = Highcharts.find(arr, function (obj) {
+                    return obj.name === word;
+                });
+                if (obj) {
+                    obj.weight += 1;
+                } else {
+                    obj = {
+                        name: word,
+                        weight: 1
+                    };
+                    arr.push(obj);
+                }
+                return arr;
+            }, []);
+
+        Highcharts.chart('container', {
+            accessibility: {
+                screenReaderSection: {
+                    beforeChartFormat: '<h5>{chartTitle}</h5>' +
+                        '<div>{chartSubtitle}</div>' +
+                        '<div>{chartLongdesc}</div>' +
+                        '<div>{viewTableButton}</div>'
+                }
+            },
+            series: [{
+                type: 'wordcloud',
+                data: data,
+                name: 'Occurrences'
+            }],
+            title: {
+                text: 'Wordcloud of Lorem Ipsum'
+            }
+        });
+    </script>
+
+    <script>
+        var ctx = document.getElementById("myChart1").getContext('2d');
+        var myChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ["Total","Answered"],
+            datasets: [{
+            backgroundColor: [
+                "#2ecc71",
+                "#3498db",
+            ],
+            data: ["{{ total|safe }}","{{ answered|safe }}"]
+            }]
+        }
+});
+    </script>
+
+    <script>
+    var ctx = document.getElementById('myChart');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ["{{ l1|safe }}", "{{ l2|safe }}", "{{ l3|safe }}", "{{ l4|safe }}", "{{ l5|safe }}"],
+            datasets: [{
+                label: '# of Queries',
+                data: ["{{ v1|safe }}", "{{ v2|safe }}", "{{ v3|safe }}", "{{ v4|safe }}", "{{ v5|safe }}"],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.5)',
+                    'rgba(54, 162, 235, 0.5)',
+                    'rgba(255, 206, 86, 0.5)',
+                    'rgba(75, 192, 192, 0.5)',
+                    'rgba(153, 102, 255, 0.5)',
+                    'rgba(255, 159, 64, 0.5)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1.5)',
+                    'rgba(54, 162, 235, 1.5)',
+                    'rgba(255, 206, 86, 1.5)',
+                    'rgba(75, 192, 192, 1.5)',
+                    'rgba(153, 102, 255, 1.5)',
+                    'rgba(255, 159, 64, 1.5)'
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+
+//     var data = {
+//   labels: ["{{ l1|safe }}", "{{ l2|safe }}", "{{ l3|safe }}", "{{ l4|safe }}", "{{ l5|safe }}"],
+//   datasets: [{
+//     label: "Dataset #1",
+//     backgroundColor: "rgba(255,99,132,0.2)",
+//     borderColor: "rgba(255,99,132,1)",
+//     borderWidth: 2,
+//     hoverBackgroundColor: "rgba(255,99,132,0.4)",
+//     hoverBorderColor: "rgba(255,99,132,1)",
+//     data: ["{{ v1|safe }}", "{{ v2|safe }}", "{{ v3|safe }}", "{{ v4|safe }}", "{{ v5|safe }}"],
+//   }]
+// };
+
+// var options = {
+//   maintainAspectRatio: false,
+//   scales: {
+//     yAxes: [{
+//       stacked: true,
+//       gridLines: {
+//         display: true,
+//         color: "rgba(255,99,132,0.2)"
+//       }
+//     }],
+//     xAxes: [{
+//       gridLines: {
+//         display: false
+//       }
+//     }]
+//   }
+// };
+
+// Chart.Bar('chart', {
+//   options: options,
+//   data: data
+// });
+
+    </script>
+
+    
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>
