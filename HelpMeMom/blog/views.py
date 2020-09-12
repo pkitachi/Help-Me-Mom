@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Post, Comments
+from .models import Post, Comments, Coins
 from .forms import AddComment
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -84,6 +84,9 @@ class PostCreateView(LoginRequiredMixin,CreateView):
 
 	def form_valid(self,form):
 		form.instance.author = self.request.user
+		coins = Post.objects.filter(author = self.request.user).count()*10
+		c = Coins.objects.filter(author = self.request.user)
+		c.update(coinNo = coins)
 		self.object = form.save()
 		return redirect('blog-home')
 

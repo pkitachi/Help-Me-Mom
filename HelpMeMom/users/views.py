@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
+from blog.models import Post, Coins
 # Create your views here.
 
 def register(request):
@@ -29,11 +30,22 @@ def profile(request):
 			messages.success(request, f'Details saved successfully')
 			return redirect('profile')
 	else:
+		# coins = Post.objects.filter(author = request.user).count()*10
+		# c = Coins(author = request.user,coinNo = coins)
+		# c.save()
 		u_form = UserUpdateForm(instance=request.user)
 		p_form = ProfileUpdateForm(instance=request.user.profile)
 	context = {
 	'u_form':u_form,
-	'p_form':p_form
+	'p_form':p_form,
+	'coins':coins
 	}
 	return render(request,'users/profile.html', context)
 
+def leaderboard(request):
+	# coins = Post.objects.filter(author.username == "hruday")
+	# c = Coins.objects.filter(author.username == "hruday")
+	# c.update(coinNo = coins)
+	# print(c.coinNo)	
+	
+	return render(request,'users/leaderboard.html')
