@@ -26,3 +26,10 @@ class Comments(models.Model):
 
 	def __str__(self):
 		return f'{self.post.title} by {self.comment_author.username} -> Comment'
+
+
+class Coins(models.Model):
+	author = models.ForeignKey(User, on_delete=models.CASCADE)
+	coinNo = models.IntegerField(default = 0)
+	def __str__(self):
+		return f'{self.author} - {self.coinNo}'
