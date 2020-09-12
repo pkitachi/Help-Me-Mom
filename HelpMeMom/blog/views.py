@@ -148,101 +148,20 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 def SearchPost(request):
 
 	query = request.POST['postsearch']
-	# print("**************{}".format(query))
+	print("**************{}".format(query))
+
+	url = f'https://api.edamam.com/search?q={query}&app_id={recipeSearchApiID}&app_key={recipeSearchApiKey}'
+	response = requests.get(url)
+	j = response.json()
 
 	results = Post.objects.filter(Q(title__icontains=query) | Q(content__icontains=query))
 
-	if(len(results) == 0):
-		messages.error(request, f"Sorry we couldn't find anything related to {query} ")
-	else:
-		messages.success(request, f"Results for ' {query} ' are ")
+	# if(len(results) == 0 ):
+	# 	messages.error(request, f"Sorry we couldn't find anything related to {query} ")
+	# else:
+	messages.success(request, f"Results for ' {query} ' are ")
 
-	return render(request, 'blog/search_results.html',{'results':results})
-
-
-
-# def Analytics(request):
-
-# 	posts = Post.objects.all()
-# 	text =''
-# 	total = Post.objects.all().count()
-# 	anshm={}
-# 	com = Comments.objects.all()
-# 	answered = 0
-# 	for i in com:
-# 		if i.post.id not in anshm:
-# 			answered+=1
-# 			anshm[i.post.id]=1
-
-# 	r = Rake()
-# 	for i in posts:
-# 		titletext = i.title
-# 		r.extract_keywords_from_text(titletext)
-# 		r.get_ranked_phrases()
-# 		li = r.get_ranked_phrases_with_scores()
-
-# 		for h in li:
-# 			if h[0]<=3:
-# 				text = text+(h[-1])
-# 				text = text+(h[-1])
-# 			else:
-# 				for k in range(int(h[0])):
-# 					text+=(h[-1])
-
-# 	guess = Guess()
-# 	lang = {}
-# 	for i in posts:
-# 		code = i.content
-# 		language = guess.language_name(code)
-# 		if language in lang:
-# 			lang[language]+=1
-# 		else:
-# 			lang[language]=1
-
-
-
-# 	# print(text)
-# 	# print(lang)
-
-# 	# number_of_colors = 8
-
-# 	# color = ["#"+''.join([random.choice('0123456789ABCDEF') for j in range(6)])
-# 	# 			for i in range(number_of_colors)]
-# 	# print(color)
-# 	sort_langs = sorted(lang.items(), key=lambda x: x[1], reverse=True)
-# 	print(sort_langs)
-
-# 	langlabels = list()
-# 	langvals = list()
-
-# 	for i in sort_langs:
-# 		langlabels.append(str(i[0]))
-# 		langvals.append(int(i[1]))
-
-# 	langlabels = langlabels[0:5]
-# 	# langvals = langvals[0:5]
-# 	l1 = langlabels[0]
-# 	l2 = langlabels[1]
-# 	l3 = langlabels[2]
-# 	l4 = langlabels[3]
-# 	l5 = langlabels[4]
-
-# 	v1 = langvals[0]
-# 	v2 = langvals[1]
-# 	v3 = langvals[2]
-# 	v4 = langvals[3]
-# 	v5 = langvals[4]
-
-# 	print(langlabels)
-# 	print(langvals)
-
-# 	return render(request, 'blog/analytics.html',{'text':text, 'langvals':langvals, 'l1':l1,'l2':l2,'l3':l3,'l4':l4,'l5':l5,'v1':v1,'v2':v2,'v3':v3,'v4':v4,'v5':v5,'total':total,'answered':answered})
-
-
-# def some_view(request):
-# #    return render_to_response('../../../VidyoConnector/js/VidyoConnector.html')
-# 	# return render(request, 'blog/test/VidyoConnector.html')
-
+	return render(request, 'blog/search_results.html',{'results':results,'response':j['hits']})
 
 
 def ApiSearch(request):
@@ -250,5 +169,5 @@ def ApiSearch(request):
 	url = f'https://api.edamam.com/search?q=chicken&app_id={recipeSearchApiID}&app_key={recipeSearchApiKey}&q=chicken'
 	response = requests.get(url)
 	j = response.json()
-	print(response.text)
-	return render(request,'blog/api.html',j)
+	# print(response.text)
+	return render(request,'blog/api.html',{'response':j['hits']})

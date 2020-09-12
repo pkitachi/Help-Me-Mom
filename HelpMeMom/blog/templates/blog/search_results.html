@@ -1,7 +1,33 @@
 {% extends 'blog/base.html' %}
 {% block content %}
     <!-- {{results}} -->
+    <h3>Standard Recipies</h3>
 
+    {% for i in response %}
+      <div class="card mb-3 text-center border-info" style="max-width: 540px;">
+        <div class="row no-gutters">
+          <div class="col-md-4" style="margin-top:30px;margin-bottom:30px">
+            <img src="{{ i.recipe.image }}" class="card-img h-100" alt="...">
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title"><a href="{{i.recipe.url  }}" target="_blank">{{ i.recipe.label }}</a></h5>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">Calories <span class="text-right">{{i.recipe.calories.quantity}} {{i.recipe.calories.unit}}</span></li>
+                <li class="list-group-item">Fat <span class="text-right">{{i.recipe.totalNutrients.FAT.quantity}} {{i.recipe.totalNutrients.FAT.unit}}</li>
+                <li class="list-group-item">Total Weight <span class="text-right">{{i.recipe.totalWeight}}</span></li>
+                <li class="list-group-item">Time needed to prepare <span class="text-right">{{i.recipe.totalTime}}</span></li>
+
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+
+    <br><br><br>
+
+    <h3>Live Experiences</h3>
     {% for post in results %}
         <article class="media content-section">
           <img src="{{ post.author.profile.image.url }} " class="rounded-circle article-img">
