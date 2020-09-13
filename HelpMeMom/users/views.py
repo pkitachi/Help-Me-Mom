@@ -30,9 +30,9 @@ def profile(request):
 			messages.success(request, f'Details saved successfully')
 			return redirect('profile')
 	else:
-		# coins = Post.objects.filter(author = request.user).count()*10
-		# c = Coins(author = request.user,coinNo = coins)
-		# c.save()
+		coins = Post.objects.filter(author = request.user).count()*10
+		c = Coins(author = request.user,coinNo = coins)
+		c.save()
 		u_form = UserUpdateForm(instance=request.user)
 		p_form = ProfileUpdateForm(instance=request.user.profile)
 	context = {

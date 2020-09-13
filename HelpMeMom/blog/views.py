@@ -19,6 +19,23 @@ import random
 recipeSearchApiID = '20fba441'
 recipeSearchApiKey = 'd31fc8d8700c4bb1addc9195e5e162fe'
 # Create your views here.
+
+dish=[
+	'fish',
+	'eggs',
+	'salmon',
+	'chicken',
+	'mutton',
+	'samosa',
+	'noodles',
+	'manchurian',
+	'beans',
+	'lemon',
+	'potato',
+	'corn',
+	'beef',
+]
+
 def home(request):
 	context = {
 		'posts':Post.objects.all()
@@ -174,3 +191,14 @@ def ApiSearch(request):
 	j = response.json()
 	# print(response.text)
 	return render(request,'blog/api.html',{'response':j['hits']})
+
+def RandomSuggestor(request):
+
+	x = random.randrange(0, len(dish)-1,1)
+	dishe = dish[x]
+
+	url = f'https://api.edamam.com/search?q={dishe}&app_id={recipeSearchApiID}&app_key={recipeSearchApiKey}'
+	response = requests.get(url)
+	j = response.json()
+	# print(response.text)
+	return render(request,'blog/random.html',{'response':j['hits']})

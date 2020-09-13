@@ -16,6 +16,7 @@ urlpatterns = [
     path('comment/<int:pk>/delete',CommentDeleteView.as_view(template_name='blog/comment_delete.html'),name='comment-delete'),
     path('search/',SearchPost,name='search-stuff'),
     path('api/',views.ApiSearch,name='api'),
+    path('random/', views.RandomSuggestor,name='random-dish'),
     # path('analytics/',Analytics,name='admin-anals'),
     # path('vidcall/',views.some_view,name='vid'),
 ]

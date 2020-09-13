@@ -93,11 +93,13 @@
                 <li class="list-group-item list-group-item-light">etc</li>
                 {% if user.is_authenticated %}
                 <li class="list-group-item list-group-item-light"><a href="{% url 'user-posts' user.username %}" class="btn btn-success" style="width:100%;">My Posts</a></li>
+                <li class="list-group-item list-group-item-light"><a href="https://peaceful-swirles-0b40fb.netlify.app/" target="_blank" class="btn btn-info" style="width:100%;">Stuck? Ask a Chef!</a></li>
                 {% endif %}
                
-                <li class="list-group-item list-group-item-light"><a href="https://peaceful-swirles-0b40fb.netlify.app/" target="_blank" class="btn btn-info" style="width:100%;">Teach Online / Join a Webinar</a></li>
                 <!-- <li class="list-group-item list-group-item-light"><a target="_blank" href="../../../VidyoConnector/js/VidyoConnector.html" class="btn btn-primary">Go to Conference</a></li> -->
                 <li class="list-group-item list-group-item-light"><a href="{% url 'leaderboard' %}" class="btn btn-primary" style="width:100%;">LeaderBoard</a></li>
+                <li class="list-group-item list-group-item-light"><a href="{% url 'random-dish' %}" class="btn btn-warning" style="width:100%;">Bored? Try our Suggestor</a></li>
+              
               </ul>
             </p>
           </div>

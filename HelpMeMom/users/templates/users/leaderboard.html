@@ -1,7 +1,52 @@
 {% extends "blog/base.html" %}
 {% load bootstrap4 %}
 {% block content %}
-  {% for i in c %}
-    <p>i</p>
-  {% endfor %}
+<div class="text-center my-4">
+
+
+  <h3>T H E - L E A D E R B O A R D</h3>
+
+</div>
+
+<div class="card shadow-lg ">
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Chef</th>
+        <th scope="col">Coins</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">1</th>
+        <td>Erireniel</td>
+        <td>40  <i class='fas fa-coins' style='font-size:40px;color:gold'></i></td>
+      </tr>
+      <tr>
+        <th scope="row">2</th>
+        <td>Hrindu</td>
+        <td>30  <i class='fas fa-coins' style='font-size:40px;color:gold'></i></td>
+      </tr>
+      <tr>
+        <th scope="row">3</th>
+        <td>Teju</td>
+        <td>10  <i class='fas fa-coins' style='font-size:40px;color:gold'></i></td>
+      </tr>
+      <tr>
+        <th scope="row">4</th>
+        <td>Akkaladevi</td>
+        <td>10  <i class='fas fa-coins' style='font-size:40px;color:gold'></i></td>
+      </tr>
+      <tr>
+        <th scope="row">5</th>
+        <td>Hruday</td>
+        <td>10  <i class='fas fa-coins' style='font-size:40px;color:gold'></i></td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+
+
 {% endblock content %}
